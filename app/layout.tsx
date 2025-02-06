@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Inter, Space_Grotesk } from "next/font/google";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,7 +12,7 @@ const inter = Inter({
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-spaceGrotask",
+  variable: "--font-spaceGrotesk",
 });
 
 export const metadata: Metadata = {
@@ -30,19 +31,33 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider
-      appearance={{
-        elements: {
-          formButtonPrimary: "primary-gradient",
-          footerActionLink: "primary-text-gradient hover:text-primary-500",
-        },
-      }}
-    >
-      <html lang="en">
-        <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+                if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                }
+            `,
+          }}
+        />
+      </head>
+      <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
+        <ThemeProvider>
+          <ClerkProvider
+            appearance={{
+              elements: {
+                formButtonPrimary: "primary-gradient",
+                footerActionLink:
+                  "primary-text-gradient hover:text-primary-500",
+              },
+            }}
+          >
+            {children}
+          </ClerkProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }
