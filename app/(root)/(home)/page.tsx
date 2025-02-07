@@ -1,15 +1,12 @@
-"use client";
-import { useThemeContext } from "@/context/ThemeContext";
-import { UserButton } from "@clerk/nextjs";
+import MyLink from "@/components/shared/MyLink";
 
 function HomagPage() {
-  const { toggleTheme } = useThemeContext();
   return (
-    <div>
-      <UserButton afterSwitchSessionUrl="/" />
-      <button onClick={toggleTheme} className="text-red-600">
-        change theme
-      </button>
+    <div className="space-x-6">
+      HomePage
+      <MyLink href={"/"} className="text-red-600">
+        test
+      </MyLink>
     </div>
   );
 }
