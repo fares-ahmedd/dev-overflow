@@ -34,7 +34,6 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 8px;
-    --transition-duration: 0.3s;
   }
   .dark {
     --background: 222.2 84% 4.9%;
@@ -64,9 +63,10 @@ body {
   }
 }
 
-* {
-  transition: background-color var(--transition-duration) ease-in-out,
-    border-color var(--transition-duration) ease-in-out;
+*,
+::before,
+::after {
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
 }
 
 /* Utilities */
@@ -102,7 +102,9 @@ body {
   .markdown {
     @apply max-w-full prose dark:prose-p:text-light-700 dark:prose-ol:text-light-700 dark:prose-ul:text-light-500 dark:prose-strong:text-white dark:prose-headings:text-white prose-headings:text-dark-400 prose-h1:text-dark-300 prose-h2:text-dark-300 prose-p:text-dark-500 prose-ul:text-dark-500 prose-ol:text-dark-500;
   }
-
+  .no-focus {
+    @apply focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 !important;
+  }
   .primary-gradient {
     background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
   }
@@ -299,7 +301,12 @@ body {
     @apply shadow-light-100 dark:shadow-none;
   }
 }
-
+.primary-text-gradient {
+  background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 /* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 3px;
