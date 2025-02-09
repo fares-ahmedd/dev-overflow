@@ -12,11 +12,12 @@ import { cn } from "@/lib/utils";
 import { SignedOut } from "@clerk/nextjs";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import LogoutButton from "../LogoutButton";
 
 function MobileNav() {
   const router = useRouter();
-  const isMobile = useIsMobile();
   const pathname = usePathname();
+  const isMobile = useIsMobile();
   if (!isMobile) return null;
   return (
     <Sheet>
@@ -24,8 +25,8 @@ function MobileNav() {
         <Image
           src={"/assets/icons/hamburger.svg"}
           alt="Menu"
-          width={36}
-          height={36}
+          width={30}
+          height={30}
           className="invert-colors"
         />
       </SheetTrigger>
@@ -63,9 +64,12 @@ function MobileNav() {
                     alt={link.label}
                     width={20}
                     height={20}
-                    className="invert-colors"
+                    className={cn(!isActive && "invert-colors")}
                   />{" "}
-                  <strong> {link.label}</strong>
+                  <strong className={cn(isActive && "text-light-900")}>
+                    {" "}
+                    {link.label}
+                  </strong>
                 </Button>
               </SheetClose>
             );
@@ -93,6 +97,8 @@ function MobileNav() {
             </SheetClose>
           </div>
         </SignedOut>
+
+        <LogoutButton />
       </SheetContent>
     </Sheet>
   );

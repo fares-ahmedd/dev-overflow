@@ -7,7 +7,7 @@ function User() {
         afterSwitchSessionUrl="/"
         appearance={{
           elements: {
-            avatarBox: "size-10",
+            avatarBox: "size-6 md:size-10",
           },
           variables: {
             colorPrimary: "#ff7000",

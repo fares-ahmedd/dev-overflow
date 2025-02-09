@@ -7,7 +7,7 @@ import GlobalSearch from "../search/GlobalSearch";
 
 function Header() {
   return (
-    <header className="fixed border-b z-50 w-full gap-5 p-6 shadow-light-300 dark:shadow-none sm:px-12 background-light900_dark200">
+    <header className="fixed  z-50 w-full gap-5 py-6 shadow-light-300 dark:shadow-none sm:px-6 background-light900_dark200">
       <nav className="flex-between container mx-auto gap-2">
         <Link href={"/"} className="flex items-center gap-1">
           <Image
