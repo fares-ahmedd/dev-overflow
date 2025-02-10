@@ -97,6 +97,7 @@ const config: Config = {
       },
       screens: {
         xs: "420px",
+        "2xl": "1400px",
       },
       keyframes: {
         "accordion-down": {

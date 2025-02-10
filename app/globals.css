@@ -308,14 +308,16 @@ body {
   -webkit-text-fill-color: transparent;
 }
 /* Custom Scrollbar */
+.custom-scrollbar {
+  overscroll-behavior: contain;
+}
 .custom-scrollbar::-webkit-scrollbar {
   width: 3px;
-  height: 3px;
   border-radius: 2px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #ffffff;
+  background: #e2e1e1;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
@@ -326,6 +328,8 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+/* end Custom Scrollbar */
 
 /* Hide Scrollbar */
 .no-scrollbar::-webkit-scrollbar {
