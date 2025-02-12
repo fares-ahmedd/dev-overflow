@@ -20,12 +20,19 @@ import { z } from "zod";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion } from "@/actions/question.action";
+import { useRouter, usePathname } from "next/navigation";
 type Type = "create" | "edit";
-
 const type: Type = "create";
 
-function QuestionForm() {
+type Props = {
+  mongoUserId: string;
+};
+
+function QuestionForm({ mongoUserId }: Props) {
   const editorRef = useRef<any>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
@@ -39,10 +46,15 @@ function QuestionForm() {
 
   async function onSubmit(values: z.infer<typeof QuestionSchema>) {
     try {
-      console.log("trigger");
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: JSON.parse(mongoUserId),
+        path: pathname,
+      });
 
-      // make an async call to your api => create a question
-      await createQuestion({});
+      router.push("/");
     } catch (error) {}
   }
 
@@ -52,26 +64,40 @@ function QuestionForm() {
   ) => {
     if (e.key === "Enter" && field.name === "tags") {
       e.preventDefault();
+      addTagToField(e.target as HTMLInputElement, field);
+    }
+  };
 
-      const tagInput = e.target as HTMLInputElement;
-      const tagValue = tagInput.value.trim();
+  const handleInputBlur = (
+    e: React.FocusEvent<HTMLInputElement>,
+    field: { name: string; value: string[] }
+  ) => {
+    if (field.name === "tags") {
+      addTagToField(e.target as HTMLInputElement, field);
+    }
+  };
 
-      if (tagValue !== "") {
-        if (tagValue.length > 15) {
-          return form.setError("tags", {
-            type: "required",
-            message: "Tag must be less than 15 characters",
-          });
-        }
+  const addTagToField = (
+    tagInput: HTMLInputElement,
+    field: { name: string; value: string[] }
+  ) => {
+    const tagValue = tagInput.value.trim();
 
-        if (!field.value.includes(tagValue as never)) {
-          form.setValue("tags", [...field.value, tagValue]);
-          tagInput.value = "";
-          form.clearErrors("tags");
-        }
-      } else {
-        form.trigger();
+    if (tagValue !== "") {
+      if (tagValue.length > 15) {
+        return form.setError("tags", {
+          type: "required",
+          message: "Tag must be less than 15 characters",
+        });
       }
+
+      if (!field.value.includes(tagValue as never)) {
+        form.setValue("tags", [...field.value, tagValue]);
+        tagInput.value = "";
+        form.clearErrors("tags");
+      }
+    } else {
+      form.trigger();
     }
   };
 
@@ -176,6 +202,7 @@ function QuestionForm() {
                   <Input
                     className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 border"
                     onKeyDown={(e) => handleInputKeyDown(e, field)}
+                    onBlur={(e) => handleInputBlur(e, field)}
                   />
 
                   {field.value.length > 0 && (

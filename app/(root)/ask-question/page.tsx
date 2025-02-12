@@ -1,12 +1,22 @@
+import { getUserById } from "@/actions/user.action";
 import QuestionForm from "@/components/forms/QuestionForm";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-function AskQuestionPage() {
+async function AskQuestionPage() {
+  // const { userId } = await auth();
+
+  const userId = "user_123456789";
+  if (!userId) return redirect("/sign-in");
+
+  const mongoUser = await getUserById({ userId });
+
   return (
     <div>
       <h1 className="h1-bold text-dark100_light900">Ask a question</h1>
 
       <div className="mt-9">
-        <QuestionForm />
+        <QuestionForm mongoUserId={JSON.stringify(mongoUser._id)} />
       </div>
     </div>
   );
