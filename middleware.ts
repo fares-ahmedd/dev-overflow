@@ -1,30 +1,21 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-// Define public routes
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/api/webhook",
-  "/question/:id",
-  "/tags",
-  "/tags/:id",
-  "/profile/:id",
-  "/community",
-  "/jobs",
-]);
+const isProtectedRoute = createRouteMatcher(["/ask-question"]);
 
-// Define ignored routes
-const isIgnoredRoute = createRouteMatcher(["/api/webhook", "/api/chatgpt"]);
-
-export default clerkMiddleware(async (auth: any, req) => {
-  if (isIgnoredRoute(req)) {
-    return; // Skip authentication for ignored routes
+export default clerkMiddleware(async (auth, request) => {
+  if (isProtectedRoute(request)) {
+    await auth.protect();
   }
 
-  if (!isPublicRoute(req)) {
-    await auth().protect(); // Protect non-public routes
-  }
+  return NextResponse.next();
 });
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    // Always run for API routes
+    "/(api|trpc)(.*)",
+  ],
 };
