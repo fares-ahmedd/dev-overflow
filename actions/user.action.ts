@@ -70,7 +70,7 @@ export async function deleteUser(params: DeleteUserParams) {
 
     const deletedUser = await User.findByIdAndDelete(user._id);
 
-    return deleteUser;
+    return deletedUser;
     // Todo: Delete user's questions and answers and everything related to the user
   } catch (error) {
     console.log(error);

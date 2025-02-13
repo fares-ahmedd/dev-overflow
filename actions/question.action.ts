@@ -22,7 +22,7 @@ export async function getQuestions(params: GetQuestionsParams) {
       })
       .sort({ createdAt: -1 });
 
-    return { questions };
+    return questions;
   } catch (error) {
     console.log(error);
     throw error;

@@ -9,8 +9,7 @@ import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/lib/constants";
 
 async function HomagPage() {
-  const result = await getQuestions({});
-  const questions = result.questions;
+  const questions = await getQuestions({});
   return (
     <>
       <div className="flex-between flex-wrap-reverse gap-2 ">

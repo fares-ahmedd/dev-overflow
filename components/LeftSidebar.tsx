@@ -1,5 +1,5 @@
 "use client";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { NAVBAR_LINKS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { SignedOut } from "@clerk/nextjs";
@@ -12,7 +12,7 @@ import { Button } from "./ui/button";
 
 function LeftSidebar() {
   const pathname = usePathname();
-  const isMobile = useIsMobile();
+  const isMobile = useMediaQuery();
 
   if (isMobile) return null;
   return (

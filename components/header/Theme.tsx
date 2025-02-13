@@ -2,12 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { useThemeContext } from "@/context/ThemeContext";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Image from "next/image";
 
 function Theme() {
   const { theme, setTheme } = useThemeContext();
-  const isMobile = useIsMobile();
+  const isMobile = useMediaQuery();
   const isLightTheme = theme === "light" || theme === null;
   return (
     <Button

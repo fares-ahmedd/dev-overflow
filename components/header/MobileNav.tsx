@@ -6,7 +6,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { NAVBAR_LINKS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { SignedOut } from "@clerk/nextjs";
@@ -17,7 +17,7 @@ import LogoutButton from "../LogoutButton";
 function MobileNav() {
   const router = useRouter();
   const pathname = usePathname();
-  const isMobile = useIsMobile();
+  const isMobile = useMediaQuery();
   if (!isMobile) return null;
   return (
     <Sheet>
