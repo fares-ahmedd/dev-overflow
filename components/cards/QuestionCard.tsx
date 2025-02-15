@@ -64,7 +64,7 @@ const QuestionCard = ({ question }: { question: Props }) => {
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
         <div className="flex-start flex-wrap gap-3">
           <Metric
-            imgUrl={"/assets/icons/avatar.svg"}
+            imgUrl={author.picture}
             alt="User"
             value={author.name}
             title={` • asked ${getTimestamp(createdAt)}`}

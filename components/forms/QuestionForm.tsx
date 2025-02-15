@@ -55,7 +55,9 @@ function QuestionForm({ mongoUserId }: Props) {
       });
 
       router.push("/");
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   const handleInputKeyDown = (
@@ -92,7 +94,7 @@ function QuestionForm({ mongoUserId }: Props) {
       }
 
       if (!field.value.includes(tagValue as never)) {
-        form.setValue("tags", [...field.value, tagValue]);
+        form.setValue("tags", [...field.value, tagValue.toUpperCase()]);
         tagInput.value = "";
         form.clearErrors("tags");
       }
@@ -206,7 +208,7 @@ function QuestionForm({ mongoUserId }: Props) {
                   />
 
                   {field.value.length > 0 && (
-                    <div className="flex-start mt-2.5 gap-2.5">
+                    <div className="flex-start my-4 gap-2.5 flex-wrap">
                       {field.value.map((tag: string) => (
                         <Badge
                           key={tag}

@@ -9,7 +9,7 @@ function LogoutButton({ className }: { className?: string }) {
   return (
     <SignedIn>
       <div className="flex-1 flex flex-col justify-end ">
-        <Button onClick={() => signOut()} variant={"destructive"}>
+        <Button onClick={() => signOut()} variant={"outline"}>
           <LogOut className="!size-5" />{" "}
           <span className={className}>Logout</span>
         </Button>{" "}
