@@ -4,7 +4,7 @@
 import { AnswerSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -27,9 +27,11 @@ function AnswerForm() {
     },
   });
 
-  const handleCreateAnswers = (data) => {};
+  const handleCreateAnswers = (data: z.infer<typeof AnswerSchema>) => {};
+
   const isSubmitting = form.formState.isSubmitting;
 
+  useEffect(function changeUserName() {}, []);
   return (
     <div>
       <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">

@@ -10,6 +10,7 @@ import { HomePageFilters } from "@/lib/constants";
 
 async function HomagPage() {
   const questions = await getQuestions({});
+
   return (
     <>
       <div className="flex-between flex-wrap-reverse gap-2 ">

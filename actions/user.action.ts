@@ -11,6 +11,7 @@ import {
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/db/question.model";
+import { UserType } from "@/lib/types";
 
 export async function getUserById(params: GetUserByIdParams) {
   try {
@@ -18,7 +19,7 @@ export async function getUserById(params: GetUserByIdParams) {
 
     const { userId } = params;
 
-    const user = await User.findOne({ clerkId: userId });
+    const user: UserType | null = await User.findOne({ clerkId: userId });
 
     return user;
   } catch (error) {
@@ -30,7 +31,7 @@ export async function getUserById(params: GetUserByIdParams) {
 export async function createUser(userData: CreateUserParams) {
   try {
     connectToDatabase();
-    const newUser = await User.create(userData);
+    const newUser: UserType = await User.create(userData);
     return newUser;
   } catch (error) {
     console.error(error);
@@ -57,7 +58,7 @@ export async function deleteUser(params: DeleteUserParams) {
     const { clerkId } = params;
     connectToDatabase();
 
-    const user = await User.findOneAndDelete({ clerkId });
+    const user: UserType | null = await User.findOneAndDelete({ clerkId });
 
     if (!user) {
       throw new Error("User not found");
@@ -84,7 +85,7 @@ export async function getAllUsers(params: GetAllUsersParams) {
     connectToDatabase();
     const { page = 1, pageSize = 20, filter, searchQuery } = params;
 
-    const users = await User.find({}).sort({ createdAt: -1 });
+    const users: UserType[] = await User.find({}).sort({ createdAt: -1 });
 
     return users;
   } catch (error) {

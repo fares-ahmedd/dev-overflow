@@ -1,18 +1,12 @@
-import { IUser } from "@/db/user.model";
-import MyLink from "../MyLink";
-import Image from "next/image";
 import { getTopInteractedTags } from "@/actions/tag.action";
-import { Badge } from "../ui/badge";
+import { UserType } from "@/lib/types";
+import Image from "next/image";
+import MyLink from "../MyLink";
 import RenderTag from "../RenderTag";
+import { Badge } from "../ui/badge";
 
 type Props = {
-  user: {
-    _id: IUser["_id"];
-    clerkId: IUser["clerkId"];
-    picture: IUser["picture"];
-    name: IUser["name"];
-    username: IUser["username"];
-  };
+  user: UserType;
 };
 
 async function UserCard({ user }: Props) {

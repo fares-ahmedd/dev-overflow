@@ -4,13 +4,14 @@ import { connectToDatabase } from "@/db/mongoose";
 import { GetAllTagsParams, GetTopInteractedTagsParams } from "./shared.types";
 import User from "@/db/user.model";
 import Tag from "@/db/tag.model";
+import { TagType, UserType } from "@/lib/types";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
     connectToDatabase();
     const { userId } = params;
 
-    const user = await User.findById(userId);
+    const user: UserType | null = await User.findById(userId);
 
     if (!user) throw new Error("User not found");
 
@@ -29,7 +30,7 @@ export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
 
-    const tags = await Tag.find({});
+    const tags: TagType[] = await Tag.find({});
 
     return tags;
   } catch (error) {

@@ -3,19 +3,20 @@
 import { connectToDatabase } from "@/db/mongoose";
 import Question from "@/db/question.model";
 import Tag from "@/db/tag.model";
+import User from "@/db/user.model";
+import { QuestionType, QuestionWithAnswersAndTags } from "@/lib/types";
+import { revalidatePath } from "next/cache";
 import {
   CreateQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
 } from "./shared.types";
-import User from "@/db/user.model";
-import { revalidatePath } from "next/cache";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
 
-    const questions = await Question.find({})
+    const questions: QuestionWithAnswersAndTags[] = await Question.find({})
       .populate({
         path: "tags",
         model: Tag,
@@ -25,7 +26,6 @@ export async function getQuestions(params: GetQuestionsParams) {
         model: User,
       })
       .sort({ createdAt: -1 });
-
     return questions;
   } catch (error) {
     console.log(error);
@@ -38,7 +38,9 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
     connectToDatabase();
     const { questionId } = params;
 
-    const question = await Question.findById(questionId)
+    const question: QuestionWithAnswersAndTags = await Question.findById(
+      questionId
+    )
       .populate({
         path: "tags",
         model: Tag,
@@ -63,7 +65,7 @@ export async function createQuestion(params: CreateQuestionParams) {
 
     const { title, content, tags, author, path } = params;
 
-    const question = await Question.create({
+    const question: QuestionType = await Question.create({
       title,
       content,
       author,
