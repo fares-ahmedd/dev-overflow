@@ -15,8 +15,8 @@ export type QuestionWithAnswersAndTags = {
 
 export type AnswerType = {
   _id: string;
-  author: string;
-  question: QuestionType;
+  author: UserType;
+  question: string;
   content: string;
   upvotes: string[];
   downvotes: string[];

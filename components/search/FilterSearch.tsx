@@ -24,7 +24,7 @@ function FilterSearch({ filters, className }: Props) {
       >
         <SelectValue placeholder="Select a filter" />
       </SelectTrigger>
-      <SelectContent className="background-light800_darkgradient ">
+      <SelectContent>
         <SelectGroup>
           {filters.map((filter) => (
             <SelectItem

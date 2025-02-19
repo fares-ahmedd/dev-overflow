@@ -6,11 +6,22 @@ import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
 import ParseHTML from "@/components/ParseHTML";
 import RenderTag from "@/components/RenderTag";
 import AnswerForm from "@/components/forms/AnswerForm";
+import { auth } from "@clerk/nextjs/server";
+import { UserType } from "@/lib/types";
+import { getUserById } from "@/actions/user.action";
+import AllAnswers from "@/components/AllAnswers";
 
 async function QuestionDetailsPage({ params }: { params: { id: string } }) {
+  const { userId: clerkId } = await auth();
   const { id } = params;
 
   const question = await getQuestionById({ questionId: id });
+
+  let mongoUser: UserType | null = null;
+
+  if (clerkId) {
+    mongoUser = await getUserById({ userId: clerkId });
+  }
 
   return (
     <>
@@ -78,7 +89,16 @@ async function QuestionDetailsPage({ params }: { params: { id: string } }) {
         ))}
       </div>
 
-      <AnswerForm />
+      <AllAnswers
+        questionId={question._id}
+        userId={JSON.stringify(mongoUser?._id)}
+        totalAnswers={question.answers.length}
+      />
+
+      <AnswerForm
+        questionId={JSON.stringify(question._id)}
+        authorId={JSON.stringify(mongoUser?._id)}
+      />
     </>
   );
 }

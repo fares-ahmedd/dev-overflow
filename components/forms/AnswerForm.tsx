@@ -16,8 +16,17 @@ import {
 } from "../ui/form";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { createAnswer } from "@/actions/answer.action";
+import { usePathname } from "next/navigation";
 
-function AnswerForm() {
+type Props = {
+  question?: string;
+  questionId: string;
+  authorId: string;
+};
+
+function AnswerForm({ authorId, questionId }: Props) {
+  const pathname = usePathname();
   const editorRef = useRef<any>(null);
 
   const form = useForm<z.infer<typeof AnswerSchema>>({
@@ -27,7 +36,26 @@ function AnswerForm() {
     },
   });
 
-  const handleCreateAnswers = (data: z.infer<typeof AnswerSchema>) => {};
+  const handleCreateAnswers = async (data: z.infer<typeof AnswerSchema>) => {
+    try {
+      await createAnswer({
+        content: data.answer,
+        author: JSON.parse(authorId),
+        question: JSON.parse(questionId),
+        path: pathname,
+      });
+
+      form.reset();
+
+      if (editorRef.current) {
+        const editor = editorRef.current;
+
+        editor.setContent("");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const isSubmitting = form.formState.isSubmitting;
 
