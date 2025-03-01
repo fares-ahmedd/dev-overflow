@@ -18,6 +18,7 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { createAnswer } from "@/actions/answer.action";
 import { usePathname } from "next/navigation";
+import { toast } from "sonner";
 
 type Props = {
   question?: string;
@@ -45,14 +46,16 @@ function AnswerForm({ authorId, questionId }: Props) {
         path: pathname,
       });
 
+      toast.success("Answer created successfully");
+
       form.reset();
 
       if (editorRef.current) {
         const editor = editorRef.current;
-
         editor.setContent("");
       }
     } catch (error) {
+      toast.error("Failed to create answer");
       console.log(error);
     }
   };

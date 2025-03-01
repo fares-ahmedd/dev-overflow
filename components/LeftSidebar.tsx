@@ -16,7 +16,7 @@ function LeftSidebar() {
 
   if (isMobile) return null;
   return (
-    <aside className="flex h-screen flex-col pb-6 pt-28 max-md:pb-14 px-4 md:px-8  background-light900_dark200 overflow-y-auto">
+    <aside className="flex h-screen  sticky top-0  flex-col pb-6 pt-28 max-md:pb-14 px-4 md:px-8  background-light900_dark200 overflow-y-auto">
       <nav>
         <ul className="space-y-2 flex flex-col ">
           {NAVBAR_LINKS.map((link) => {

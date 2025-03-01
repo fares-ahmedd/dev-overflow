@@ -10,6 +10,7 @@ import { auth } from "@clerk/nextjs/server";
 import { UserType } from "@/lib/types";
 import { getUserById } from "@/actions/user.action";
 import AllAnswers from "@/components/AllAnswers";
+import Votes from "@/components/Votes";
 
 async function QuestionDetailsPage({ params }: { params: { id: string } }) {
   const { userId: clerkId } = await auth();
@@ -44,7 +45,16 @@ async function QuestionDetailsPage({ params }: { params: { id: string } }) {
             </span>
           </MyLink>
 
-          <div className="flex justify-end">VOTIING</div>
+          <Votes
+            type="Question"
+            itemId={JSON.stringify(question._id)}
+            userId={JSON.stringify(mongoUser?._id)}
+            upvotes={question.upvotes.length}
+            downvotes={question.downvotes.length}
+            hasUpVoted={question.upvotes.includes(mongoUser?._id ?? "")}
+            hasDownVoted={question.downvotes.includes(mongoUser?._id ?? "")}
+            hasSaved={mongoUser?.saved?.includes(question._id) ?? false}
+          />
         </div>
 
         <h2 className="h2-semibold text-dark200_light800 mt-3.5 w-full text-left">
@@ -55,8 +65,7 @@ async function QuestionDetailsPage({ params }: { params: { id: string } }) {
           <Metric
             imgUrl="/assets/icons/clock.svg"
             alt="Clock icon"
-            value={` asked . ${getTimestamp(question.createdAt)}`}
-            title="Asked"
+            value={` Asked . ${getTimestamp(question.createdAt)}`}
             textStyles="small-medium text-dark400_light800"
           />
           <Metric
@@ -91,7 +100,7 @@ async function QuestionDetailsPage({ params }: { params: { id: string } }) {
 
       <AllAnswers
         questionId={question._id}
-        userId={JSON.stringify(mongoUser?._id)}
+        userId={mongoUser?._id ?? ""}
         totalAnswers={question.answers.length}
       />
 

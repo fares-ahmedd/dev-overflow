@@ -5,6 +5,7 @@ import MyLink from "./MyLink";
 import Image from "next/image";
 import { getTimestamp } from "@/lib/utils";
 import ParseHTML from "./ParseHTML";
+import Votes from "./Votes";
 
 type Props = {
   questionId: string;
@@ -23,7 +24,7 @@ async function AllAnswers({
 }: Props) {
   const answers = await getAnswers({ questionId });
   return (
-    <div className="mt-11">
+    <div className="mt-11 mb-2 p-2 rounded-lg background-light900_dark200">
       <div className="flex-between">
         <h3 className="primary-text-gradient">
           {totalAnswers} Answer{totalAnswers > 1 && "s"}
@@ -34,7 +35,10 @@ async function AllAnswers({
 
       <div>
         {answers.map((answer) => (
-          <article key={answer._id} className="pb-2 pt-8">
+          <article
+            key={answer._id}
+            className="pb-2 pt-8 border-b last:border-none"
+          >
             <div className="mb-2 flex flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
               <MyLink
                 href={`/profile/${answer.author.clerkId}`}
@@ -57,6 +61,15 @@ async function AllAnswers({
                 </div>
               </MyLink>
               <div className="flex justify-end">
+                <Votes
+                  type="Answer"
+                  itemId={JSON.stringify(answer._id)}
+                  userId={JSON.stringify(userId)}
+                  upvotes={answer.upvotes.length}
+                  downvotes={answer.downvotes.length}
+                  hasUpVoted={answer.upvotes.includes(userId)}
+                  hasDownVoted={answer.downvotes.includes(userId)}
+                />
                 {/* <Votes
                   type="Answer"
                   itemId={JSON.stringify(answer._id)}

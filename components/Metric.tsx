@@ -7,7 +7,7 @@ interface MetricProps {
   imgUrl: string;
   alt: string;
   value: number | string;
-  title: string;
+  title?: string;
   textStyles?: string;
   href?: string;
   isAuthor?: boolean;
