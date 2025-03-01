@@ -21,6 +21,7 @@ import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion } from "@/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
+import { toast } from "sonner";
 type Type = "create" | "edit";
 const type: Type = "create";
 
@@ -54,6 +55,7 @@ function QuestionForm({ mongoUserId }: Props) {
         path: pathname,
       });
 
+      toast.success("Question posted successfully");
       router.push("/");
     } catch (error) {
       console.log(error);
@@ -241,7 +243,7 @@ function QuestionForm({ mongoUserId }: Props) {
 
         <Button
           type="submit"
-          className="primary-gradient w-fit !text-light-900"
+          className="primary-gradient w-fit !text-light-900 self-end"
           disabled={isSubmitting}
         >
           {isSubmitting ? (

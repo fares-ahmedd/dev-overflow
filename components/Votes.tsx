@@ -8,6 +8,8 @@ import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import SaveButton from "./SaveButton";
 import VoteButton from "./VoteButton";
+import { useEffect } from "react";
+import { viewQuestion } from "@/actions/interaction.action";
 
 type Props = {
   type: "Question" | "Answer";
@@ -95,6 +97,20 @@ function Votes({
       toast.success("Question unsaved successfully");
     }
   };
+
+  useEffect(() => {
+    let mount = true;
+    if (mount) {
+      viewQuestion({
+        questionId: JSON.parse(itemId),
+        userId: userId ? JSON.parse(userId) : undefined,
+      });
+    }
+
+    return () => {
+      mount = false;
+    };
+  }, [itemId, userId, pathname]);
   return (
     <div className="flex gap-5">
       <div className="flex-center gap-2.5">

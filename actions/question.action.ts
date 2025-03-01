@@ -15,7 +15,7 @@ import {
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const questions: QuestionWithAnswersAndTags[] = await Question.find({})
       .populate({
@@ -36,7 +36,7 @@ export async function getQuestions(params: GetQuestionsParams) {
 
 export async function getQuestionById(params: GetQuestionByIdParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const { questionId } = params;
 
     const question: QuestionWithAnswersAndTags = await Question.findById(
@@ -62,7 +62,7 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
 
 export async function createQuestion(params: CreateQuestionParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const { title, content, tags, author, path } = params;
 
@@ -79,7 +79,7 @@ export async function createQuestion(params: CreateQuestionParams) {
         {
           name: { $regex: new RegExp(`^${tag}$`, "i") },
         },
-        { $setOnInsert: { name: tag }, $push: { question: question._id } },
+        { $setOnInsert: { name: tag }, $push: { questions: question._id } },
         {
           upsert: true,
           new: true,
@@ -101,7 +101,7 @@ export async function createQuestion(params: CreateQuestionParams) {
 
 export async function upvoteQuestion(params: QuestionVoteParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const { questionId, userId, hasAlreadyUpvoted, hasAlreadyDownvoted, path } =
       params;
@@ -140,7 +140,7 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
 
 export async function downvoteQuestion(params: QuestionVoteParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const { questionId, userId, hasAlreadyUpvoted, hasAlreadyDownvoted, path } =
       params;
