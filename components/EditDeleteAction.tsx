@@ -3,7 +3,7 @@ import { deleteAnswer } from "@/actions/answer.action";
 import { deleteQuestion } from "@/actions/question.action";
 import useConfirm from "@/hooks/useConfirm";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 
@@ -14,6 +14,7 @@ type Props = {
 
 function EditDeleteAction({ itemId, type }: Props) {
   const pathname = usePathname();
+  const router = useRouter();
   const [ConfirmDialog, confirm] = useConfirm(
     type === "Question" ? "Delete Question" : "Delete Answer",
     type === "Question"
@@ -21,7 +22,8 @@ function EditDeleteAction({ itemId, type }: Props) {
       : "Are you sure you want to delete this answer?"
   );
   const handleEdit = () => {
-    console.log("Edit", itemId);
+    router.push(`/question/edit/${JSON.parse(itemId)}`);
+    window.scrollTo(0, 0);
   };
   const handleDelete = async () => {
     const ok = await confirm();

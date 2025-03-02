@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { createQuestion, editQuestion } from "@/actions/question.action";
 import { Button } from "@/components/ui/button";
-import { useRef } from "react";
-import { Editor } from "@tinymce/tinymce-react";
 import {
   Form,
   FormControl,
@@ -16,49 +13,78 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { QuestionSchema } from "@/lib/validations";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Editor } from "@tinymce/tinymce-react";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { useRef } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Badge } from "../ui/badge";
-import Image from "next/image";
-import { createQuestion } from "@/actions/question.action";
-import { useRouter, usePathname } from "next/navigation";
-import { toast } from "sonner";
 type Type = "create" | "edit";
-const type: Type = "create";
 
 type Props = {
   mongoUserId: string;
+  type: Type;
+  questionDetails?: string;
 };
 
-function QuestionForm({ mongoUserId }: Props) {
+function QuestionForm({ mongoUserId, type, questionDetails }: Props) {
   const editorRef = useRef<any>(null);
   const router = useRouter();
   const pathname = usePathname();
 
+  const currentQuestion = JSON.parse(questionDetails || "");
+  const defaultTags =
+    currentQuestion?.tags?.map((tag: { name: string }) => tag.name) || [];
+
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
-      title: "",
-      explanation: "",
-      tags: [],
+      title: currentQuestion?.title || "",
+      explanation: currentQuestion?.content || "",
+      tags: defaultTags,
     },
   });
 
   const isSubmitting = form.formState.isSubmitting;
 
   async function onSubmit(values: z.infer<typeof QuestionSchema>) {
-    try {
-      await createQuestion({
-        title: values.title,
-        content: values.explanation,
-        tags: values.tags,
-        author: JSON.parse(mongoUserId),
-        path: pathname,
-      });
+    if (type === "create") {
+      try {
+        await createQuestion({
+          title: values.title,
+          content: values.explanation,
+          tags: values.tags,
+          author: JSON.parse(mongoUserId),
+          path: pathname,
+        });
 
-      toast.success("Question posted successfully");
-      router.push("/");
-    } catch (error) {
-      console.error(error);
+        toast.success("Question posted successfully");
+        router.push("/");
+      } catch (error) {
+        toast.error("Failed to post question");
+        console.error(error);
+      }
+    }
+
+    if (type === "edit") {
+      try {
+        await editQuestion({
+          questionId: currentQuestion._id,
+          title: values.title,
+          content: values.explanation,
+          path: pathname,
+        });
+
+        toast.success("Question edited successfully");
+        router.push(`/question/${currentQuestion._id}`);
+        window.scrollTo(0, 0);
+      } catch (error) {
+        toast.error("Failed to edit question");
+        console.error(error);
+      }
     }
   }
 
@@ -106,6 +132,7 @@ function QuestionForm({ mongoUserId }: Props) {
   };
 
   const handleRemoveTag = (tag: string, field: { value: string[] }) => {
+    if (type === "edit") return;
     const newTags = field.value.filter((t: string) => t !== tag);
 
     form.setValue("tags", newTags);
@@ -153,7 +180,7 @@ function QuestionForm({ mongoUserId }: Props) {
                   onInit={(_evt, editor) => (editorRef.current = editor)}
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
-                  initialValue={""}
+                  initialValue={currentQuestion?.content || ""}
                   init={{
                     height: 350,
                     menubar: false,
@@ -207,6 +234,7 @@ function QuestionForm({ mongoUserId }: Props) {
                     className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 border"
                     onKeyDown={(e) => handleInputKeyDown(e, field)}
                     onBlur={(e) => handleInputBlur(e, field)}
+                    disabled={type === "edit"}
                   />
 
                   {field.value.length > 0 && (
@@ -219,7 +247,7 @@ function QuestionForm({ mongoUserId }: Props) {
                           role="button"
                           onClick={() => handleRemoveTag(tag, field)}
                         >
-                          {tag}{" "}
+                          {tag}
                           <Image
                             src={"/assets/icons/close.svg"}
                             alt="close"
