@@ -29,7 +29,7 @@ export async function getQuestions(params: GetQuestionsParams) {
       .sort({ createdAt: -1 });
     return questions;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
@@ -55,7 +55,7 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
 
     return question;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
@@ -95,7 +95,7 @@ export async function createQuestion(params: CreateQuestionParams) {
 
     revalidatePath(path);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -133,7 +133,7 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
 
     revalidatePath(path);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
@@ -172,7 +172,7 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
 
     revalidatePath(path);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }

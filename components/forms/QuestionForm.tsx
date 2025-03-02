@@ -58,7 +58,7 @@ function QuestionForm({ mongoUserId }: Props) {
       toast.success("Question posted successfully");
       router.push("/");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

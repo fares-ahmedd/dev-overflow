@@ -9,8 +9,6 @@ type Props = {
 function UpvoteButton({ hasUpvoted, ...props }: Props) {
   const { pending } = useFormStatus();
 
-  console.log(pending);
-
   return (
     <button
       aria-label={hasUpvoted ? "unvote" : "vote"}

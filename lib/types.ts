@@ -57,3 +57,21 @@ export type UserType = {
   saved: string[];
   joinedAt: Date;
 };
+
+export type UserAnswerType = {
+  _id: string;
+  author: {
+    _id: string;
+    clerkId: string;
+    picture: string;
+    name: string;
+  };
+  question: {
+    _id: string;
+    title: string;
+  };
+  content: string;
+  upvotes: string[];
+  downvotes: string[];
+  createdAt: Date;
+};

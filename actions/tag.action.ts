@@ -26,7 +26,7 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
       { name: "tag3", id: "3" },
     ];
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
@@ -39,7 +39,7 @@ export async function getAllTags(params: GetAllTagsParams) {
 
     return tags;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
@@ -49,8 +49,6 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
     connectToDatabase();
 
     const { tagId, page = 1, pageSize = 10, searchQuery } = params;
-
-    console.log(tagId);
 
     const tagFilter: FilterQuery<ITag> = { _id: tagId };
     const tag = await Tag.findOne(tagFilter).populate({
@@ -79,7 +77,7 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
       name: tag.name,
     } as { questions: QuestionWithAnswersAndTags[]; name: string };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }

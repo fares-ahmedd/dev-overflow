@@ -56,7 +56,7 @@ function AnswerForm({ authorId, questionId }: Props) {
       }
     } catch (error) {
       toast.error("Failed to create answer");
-      console.log(error);
+      console.error(error);
     }
   };
 

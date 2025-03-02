@@ -14,7 +14,12 @@ import {
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/db/question.model";
-import { QuestionWithAnswersAndTags, UserType } from "@/lib/types";
+import {
+  AnswerType,
+  QuestionWithAnswersAndTags,
+  UserAnswerType,
+  UserType,
+} from "@/lib/types";
 import Tag from "@/db/tag.model";
 import Answer from "@/db/answer.model";
 
@@ -28,7 +33,7 @@ export async function getUserById(params: GetUserByIdParams) {
 
     return user;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
@@ -80,7 +85,7 @@ export async function deleteUser(params: DeleteUserParams) {
     return deletedUser;
     // Todo: Delete user's questions and answers and everything related to the user
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
@@ -94,7 +99,7 @@ export async function getAllUsers(params: GetAllUsersParams) {
 
     return users;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
@@ -129,7 +134,7 @@ export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
       return true;
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
@@ -186,7 +191,7 @@ export async function getUserInfo(params: GetUserByIdParams) {
       totalAnswers,
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -210,6 +215,30 @@ export async function getUserQuestions(params: GetUserStatsParams) {
       questions: userQuestions,
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
+  }
+}
+
+export async function getUserAnswers(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+
+    const { userId, page = 1, pageSize = 10 } = params;
+
+    const totalAnswers = await Answer.countDocuments({ author: userId });
+
+    const userAnswers: UserAnswerType[] = await Answer.find({
+      author: userId,
+    })
+      .sort({ upvotes: -1 })
+      .populate("question", "_id title")
+      .populate("author", "_id clerkId name picture");
+
+    return {
+      totalAnswers,
+      answers: userAnswers,
+    };
+  } catch (error) {
+    console.error(error);
   }
 }

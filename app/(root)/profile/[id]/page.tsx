@@ -86,7 +86,7 @@ async function ProfilePage({ params, searchParams }: Props) {
         totalAnswers={userInfo?.totalAnswers}
       />
 
-      <div className="mt-10 flex gap-10">
+      <div className="my-5 ">
         <Tabs defaultValue="top-posts" className="flex-1">
           <TabsList>
             <TabsTrigger value="top-posts">Top Posts</TabsTrigger>
