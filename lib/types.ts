@@ -51,6 +51,7 @@ export type UserType = {
   email: string;
   picture: string;
   location?: string;
+  bio?: string;
   portfolioWebsite?: string;
   reputation: number;
   saved: string[];

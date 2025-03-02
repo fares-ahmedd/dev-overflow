@@ -2,7 +2,7 @@
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { NAVBAR_LINKS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { SignedOut } from "@clerk/nextjs";
+import { SignedOut, useUser } from "@clerk/nextjs";
 import { User2, UserPlus2 } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -13,6 +13,7 @@ import { Button } from "./ui/button";
 function LeftSidebar() {
   const pathname = usePathname();
   const isMobile = useMediaQuery();
+  const { user } = useUser();
 
   if (isMobile) return null;
   return (
@@ -35,7 +36,13 @@ function LeftSidebar() {
                     "flex items-center justify-start gap-5 ",
                     isActive && "primary-gradient rounded-lg !text-light900"
                   )}
-                  href={link.route}
+                  href={
+                    link.route === "/profile"
+                      ? user?.id
+                        ? `${link.route}/${user.id}`
+                        : "/sign-in"
+                      : link.route
+                  }
                 >
                   <Image
                     src={link.imgURL}
@@ -50,7 +57,6 @@ function LeftSidebar() {
                       isActive && "text-light-900"
                     )}
                   >
-                    {" "}
                     {link.label}
                   </strong>
                 </MyLink>

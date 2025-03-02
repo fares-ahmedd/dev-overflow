@@ -15,7 +15,7 @@ import {
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
 
     const questions: QuestionWithAnswersAndTags[] = await Question.find({})
       .populate({
@@ -36,7 +36,7 @@ export async function getQuestions(params: GetQuestionsParams) {
 
 export async function getQuestionById(params: GetQuestionByIdParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const { questionId } = params;
 
     const question: QuestionWithAnswersAndTags = await Question.findById(
@@ -62,7 +62,7 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
 
 export async function createQuestion(params: CreateQuestionParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
 
     const { title, content, tags, author, path } = params;
 
@@ -101,7 +101,7 @@ export async function createQuestion(params: CreateQuestionParams) {
 
 export async function upvoteQuestion(params: QuestionVoteParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
 
     const { questionId, userId, hasAlreadyUpvoted, hasAlreadyDownvoted, path } =
       params;
@@ -140,7 +140,7 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
 
 export async function downvoteQuestion(params: QuestionVoteParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
 
     const { questionId, userId, hasAlreadyUpvoted, hasAlreadyDownvoted, path } =
       params;

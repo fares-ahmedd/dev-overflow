@@ -13,7 +13,7 @@ import Question from "@/db/question.model";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const { userId } = params;
 
     const user: UserType | null = await User.findById(userId);
@@ -33,7 +33,7 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
 
 export async function getAllTags(params: GetAllTagsParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
 
     const tags: TagType[] = await Tag.find({});
 
@@ -46,7 +46,7 @@ export async function getAllTags(params: GetAllTagsParams) {
 
 export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
 
     const { tagId, page = 1, pageSize = 10, searchQuery } = params;
 

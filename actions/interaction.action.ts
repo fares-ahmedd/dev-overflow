@@ -7,7 +7,7 @@ import Interaction from "@/db/interaction.model";
 
 export async function viewQuestion(params: ViewQuestionParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const { questionId, userId } = params;
 
     await Question.findByIdAndUpdate(questionId, {

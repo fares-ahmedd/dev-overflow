@@ -8,6 +8,7 @@ import {
   GetAllUsersParams,
   GetSavedQuestionsParams,
   GetUserByIdParams,
+  GetUserStatsParams,
   ToggleSaveQuestionParams,
   UpdateUserParams,
 } from "./shared.types";
@@ -15,10 +16,11 @@ import { revalidatePath } from "next/cache";
 import Question from "@/db/question.model";
 import { QuestionWithAnswersAndTags, UserType } from "@/lib/types";
 import Tag from "@/db/tag.model";
+import Answer from "@/db/answer.model";
 
 export async function getUserById(params: GetUserByIdParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
 
     const { userId } = params;
 
@@ -33,7 +35,7 @@ export async function getUserById(params: GetUserByIdParams) {
 
 export async function createUser(userData: CreateUserParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const newUser: UserType = await User.create(userData);
     return newUser;
   } catch (error) {
@@ -44,7 +46,7 @@ export async function createUser(userData: CreateUserParams) {
 
 export async function updateUser(params: UpdateUserParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const { clerkId, updateData, path } = params;
     await User.findOneAndUpdate({ clerkId }, updateData, {
       new: true,
@@ -59,7 +61,7 @@ export async function updateUser(params: UpdateUserParams) {
 export async function deleteUser(params: DeleteUserParams) {
   try {
     const { clerkId } = params;
-    await connectToDatabase();
+    connectToDatabase();
 
     const user: UserType | null = await User.findOneAndDelete({ clerkId });
 
@@ -85,7 +87,7 @@ export async function deleteUser(params: DeleteUserParams) {
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const { page = 1, pageSize = 20, filter, searchQuery } = params;
 
     const users: UserType[] = await User.find({}).sort({ createdAt: -1 });
@@ -99,7 +101,7 @@ export async function getAllUsers(params: GetAllUsersParams) {
 
 export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
 
     const { userId, questionId, path } = params;
 
@@ -134,7 +136,7 @@ export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
 
 export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
-    await connectToDatabase();
+    connectToDatabase();
     const { clerkId, searchQuery, filter, page = 1, pageSize = 10 } = params;
 
     const query: FilterQuery<typeof Question> = searchQuery
@@ -160,5 +162,54 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   } catch (error) {
     console.error(error);
     throw error;
+  }
+}
+
+export async function getUserInfo(params: GetUserByIdParams) {
+  try {
+    connectToDatabase();
+
+    const { userId } = params;
+
+    const user: UserType | null = await User.findOne({ clerkId: userId });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const totalQuestions = await Question.countDocuments({ author: user._id });
+    const totalAnswers = await Answer.countDocuments({ author: user._id });
+
+    return {
+      user,
+      totalQuestions,
+      totalAnswers,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getUserQuestions(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+
+    const { userId, page = 1, pageSize = 10 } = params;
+
+    const totalQuestions = await Question.countDocuments({ author: userId });
+
+    const userQuestions: QuestionWithAnswersAndTags[] = await Question.find({
+      author: userId,
+    })
+      .sort({ views: -1, upvotes: -1 })
+      .populate("tags", "_id name")
+      .populate("author", "_id clerkId name picture");
+
+    return {
+      totalQuestions,
+      questions: userQuestions,
+    };
+  } catch (error) {
+    console.log(error);
   }
 }
