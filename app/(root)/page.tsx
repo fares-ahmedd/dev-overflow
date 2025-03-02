@@ -7,8 +7,10 @@ import HomeFilterButtons from "@/components/search/HomeFilterButtons";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/lib/constants";
+import { auth } from "@clerk/nextjs/server";
 
 async function HomagPage() {
+  const { userId: clerkId } = await auth();
   const questions = await getQuestions({});
 
   return (
@@ -40,7 +42,11 @@ async function HomagPage() {
       <div className="mt-10 flex w-full flex-col gap-6">
         {questions.length > 0 ? (
           questions.map((question) => (
-            <QuestionCard key={question._id} question={question} />
+            <QuestionCard
+              key={question._id}
+              question={question}
+              clerkId={clerkId}
+            />
           ))
         ) : (
           <NoResult

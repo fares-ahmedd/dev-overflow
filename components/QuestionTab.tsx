@@ -17,7 +17,11 @@ async function QuestionTab({ searchParams, userId, clerkId }: Props) {
     <>
       <div className="space-y-3">
         {result?.questions.map((question) => (
-          <QuestionCard key={question._id} question={question} />
+          <QuestionCard
+            key={question._id}
+            question={question}
+            clerkId={clerkId}
+          />
         ))}
       </div>
     </>

@@ -1,9 +1,7 @@
-import { getQuestions } from "@/actions/question.action";
 import { getSavedQuestions } from "@/actions/user.action";
 import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/NoResult";
 import FilterSearch from "@/components/search/FilterSearch";
-import HomeFilterButtons from "@/components/search/HomeFilterButtons";
 import LocalSearch from "@/components/search/LocalSearch";
 import { QuestionFilters } from "@/lib/constants";
 import { auth } from "@clerk/nextjs/server";
@@ -35,7 +33,11 @@ async function CollectionPage() {
       <div className="mt-10 flex w-full flex-col gap-6">
         {questions.length > 0 ? (
           questions.map((question) => (
-            <QuestionCard key={question._id} question={question} />
+            <QuestionCard
+              key={question._id}
+              question={question}
+              clerkId={userId}
+            />
           ))
         ) : (
           <NoResult

@@ -2,6 +2,7 @@ import { getQuestionsByTagId } from "@/actions/tag.action";
 import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/NoResult";
 import LocalSearch from "@/components/search/LocalSearch";
+import { auth } from "@clerk/nextjs/server";
 
 export type Props = {
   params: {
@@ -11,6 +12,7 @@ export type Props = {
 };
 
 async function page({ params, searchParams }: Props) {
+  const { userId: clerkId } = await auth();
   const { name, questions } = await getQuestionsByTagId({
     tagId: params.id,
   });
@@ -31,7 +33,11 @@ async function page({ params, searchParams }: Props) {
       <div className="mt-10 flex w-full flex-col gap-6">
         {questions.length > 0 ? (
           questions.map((question) => (
-            <QuestionCard key={question._id} question={question} />
+            <QuestionCard
+              key={question._id}
+              question={question}
+              clerkId={clerkId}
+            />
           ))
         ) : (
           <NoResult
