@@ -8,7 +8,12 @@ import {
 } from "./shared.types";
 import User from "@/db/user.model";
 import Tag, { ITag } from "@/db/tag.model";
-import { QuestionWithAnswersAndTags, TagType, UserType } from "@/lib/types";
+import {
+  PopularTagType,
+  QuestionWithAnswersAndTags,
+  TagType,
+  UserType,
+} from "@/lib/types";
 import Question from "@/db/question.model";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
@@ -76,6 +81,23 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
       questions: tag.questions,
       name: tag.name,
     } as { questions: QuestionWithAnswersAndTags[]; name: string };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function getPopularTags() {
+  try {
+    connectToDatabase();
+
+    const popularTags: PopularTagType[] = await Tag.aggregate([
+      { $project: { name: 1, numberOfQuestions: { $size: "$questions" } } },
+      { $sort: { numberOfQuestions: -1 } },
+      { $limit: 5 },
+    ]);
+
+    return popularTags;
   } catch (error) {
     console.error(error);
     throw error;

@@ -218,3 +218,21 @@ export async function editQuestion(params: EditQuestionParams) {
     console.error(error);
   }
 }
+
+export async function getHotQuestions() {
+  try {
+    connectToDatabase();
+
+    const hotQuestions: QuestionType[] = await Question.find({})
+      .sort({
+        views: -1,
+        upvotes: -1,
+      })
+      .limit(5);
+
+    if (!hotQuestions) throw new Error("No hot questions found");
+    return hotQuestions;
+  } catch (error) {
+    console.error(error);
+  }
+}

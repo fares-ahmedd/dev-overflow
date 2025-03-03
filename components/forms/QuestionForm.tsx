@@ -35,7 +35,8 @@ function QuestionForm({ mongoUserId, type, questionDetails }: Props) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const currentQuestion = JSON.parse(questionDetails || "");
+  const currentQuestion = JSON.parse(questionDetails || "{}");
+
   const defaultTags =
     currentQuestion?.tags?.map((tag: { name: string }) => tag.name) || [];
 

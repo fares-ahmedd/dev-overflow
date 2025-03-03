@@ -75,3 +75,9 @@ export type UserAnswerType = {
   downvotes: string[];
   createdAt: Date;
 };
+
+export type PopularTagType = {
+  _id: string;
+  name: string;
+  numberOfQuestions: number;
+};
