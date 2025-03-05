@@ -42,11 +42,30 @@ export async function getAnswers(params: GetAnswersParams) {
   try {
     connectToDatabase();
 
-    const { questionId, sortBy, page = 1, pageSize = 20 } = params;
+    const { questionId, filter, page = 1, pageSize = 20 } = params;
 
+    let sortOptions = {};
+
+    switch (filter) {
+      case "highestUpvotes":
+        sortOptions = { upvotes: -1 };
+        break;
+      case "lowestUpvotes":
+        sortOptions = { upvotes: 1 };
+        break;
+      case "recent":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "old":
+        sortOptions = { createdAt: -1 };
+        break;
+      default:
+        sortOptions = {};
+        break;
+    }
     const answers: AnswerType[] = await Answer.find({ question: questionId })
       .populate("author", "_id clerkId name picture")
-      .sort({ createdAt: -1 });
+      .sort(sortOptions);
 
     return answers;
   } catch (error) {

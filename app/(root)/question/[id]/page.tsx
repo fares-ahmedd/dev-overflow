@@ -11,11 +11,14 @@ import { UserType } from "@/lib/types";
 import { getUserById } from "@/actions/user.action";
 import AllAnswers from "@/components/AllAnswers";
 import Votes from "@/components/Votes";
-
-async function QuestionDetailsPage({ params }: { params: { id: string } }) {
+type Props = {
+  params: { id: string };
+  searchParams: { [key: string]: string | undefined };
+};
+async function QuestionDetailsPage({ params, searchParams }: Props) {
   const { userId: clerkId } = await auth();
   const { id } = params;
-
+  const filter = searchParams.filter;
   const question = await getQuestionById({ questionId: id });
 
   let mongoUser: UserType | null = null;
@@ -101,6 +104,7 @@ async function QuestionDetailsPage({ params }: { params: { id: string } }) {
       <AllAnswers
         questionId={question._id}
         userId={mongoUser?._id ?? ""}
+        filter={filter}
         totalAnswers={question.answers.length}
       />
 

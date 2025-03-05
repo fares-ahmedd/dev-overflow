@@ -58,7 +58,7 @@ const QuestionCard = ({ question, clerkId }: Props) => {
             alt="User"
             value={author.name}
             title={` • asked ${getTimestamp(createdAt)}`}
-            href={`/profile/${author._id}`}
+            href={`/profile/${author.clerkId}`}
             isAuthor
             textStyles="body-medium text-dark400_light700"
           />

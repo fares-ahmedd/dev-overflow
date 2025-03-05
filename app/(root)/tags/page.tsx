@@ -5,9 +5,15 @@ import FilterSearch from "@/components/search/FilterSearch";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import { TagFilters } from "@/lib/constants";
+type Props = { searchParams: { [key: string]: string | undefined } };
 
-async function TagsPage() {
-  const tags = await getAllTags({});
+async function TagsPage({ searchParams }: Props) {
+  const searchQuery = searchParams.q;
+  const filter = searchParams.filter;
+  const tags = await getAllTags({
+    searchQuery,
+    filter,
+  });
 
   return (
     <>
@@ -15,7 +21,7 @@ async function TagsPage() {
 
       <div className="mt-11 flex   justify-between items-center gap-5 max-md:flex-col">
         <LocalSearch
-          route={"/tags"}
+          query={"q"}
           imgSrc="/assets/icons/search.svg"
           placeholder="Search For Tags"
           className="w-full"
@@ -30,7 +36,7 @@ async function TagsPage() {
               key={tag._id}
               className="shadow-light100_darknone background-light900_dark200 light-border flex w-full flex-col rounded-2xl border justify-center items-center gap-4 p-4"
             >
-              <Button asChild className="uppercase">
+              <Button asChild className="uppercase" variant={"secondary"}>
                 <MyLink href={`/tags/${tag._id}`}>{tag.name}</MyLink>
               </Button>
 

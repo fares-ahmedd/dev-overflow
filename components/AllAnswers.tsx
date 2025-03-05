@@ -12,7 +12,7 @@ type Props = {
   userId: string;
   totalAnswers: number;
   page?: number;
-  filter?: number;
+  filter: string | undefined;
 };
 
 async function AllAnswers({
@@ -22,7 +22,7 @@ async function AllAnswers({
   page,
   filter,
 }: Props) {
-  const answers = await getAnswers({ questionId });
+  const answers = await getAnswers({ questionId, filter });
   return (
     <div className="mt-11 mb-2 p-2 rounded-lg background-light900_dark200">
       <div className="flex-between">

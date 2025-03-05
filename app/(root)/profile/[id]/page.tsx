@@ -32,7 +32,7 @@ async function ProfilePage({ params, searchParams }: Props) {
             className="rounded-full object-cover"
           />
 
-          <div className="mt-3">
+          <div className="mt-3 space-y-2">
             <h2 className="h2-bold text-dark100_light900">
               {userInfo?.user.name}
             </h2>
@@ -45,6 +45,7 @@ async function ProfilePage({ params, searchParams }: Props) {
                 <ProfileLink
                   imgUrl="/assets/icons/link.svg"
                   title={"Portfolio"}
+                  href={userInfo?.user.portfolioWebsite}
                 />
               )}{" "}
               {userInfo?.user.location && (
@@ -53,11 +54,11 @@ async function ProfilePage({ params, searchParams }: Props) {
                   title={userInfo?.user.location}
                 />
               )}
+              <ProfileLink
+                imgUrl="/assets/icons/calendar.svg"
+                title={getJoinedDate(userInfo?.user.joinedAt ?? new Date())}
+              />
             </div>
-            <ProfileLink
-              imgUrl="/assets/icons/calendar.svg"
-              title={getJoinedDate(userInfo?.user.joinedAt ?? new Date())}
-            />
 
             {userInfo?.user.bio && (
               <p className="paragraph-regular text-dark400_light800">

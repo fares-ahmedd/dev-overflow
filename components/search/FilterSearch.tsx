@@ -1,3 +1,6 @@
+"use client";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+
 import {
   Select,
   SelectContent,
@@ -14,8 +17,23 @@ type Props = {
   className?: string;
 };
 function FilterSearch({ filters, className }: Props) {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const searchParams = useSearchParams();
+  const initialFilter = searchParams.get("filter") || "all";
+
+  const handleFilter = (value: string) => {
+    const params = new URLSearchParams(window.location.search);
+    if (value !== "all") {
+      params.set("filter", value);
+    } else {
+      params.delete("filter");
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
   return (
-    <Select>
+    <Select defaultValue={initialFilter} onValueChange={handleFilter}>
       <SelectTrigger
         className={cn(
           "w-full background-light800_darkgradient  min-h-[56px] border-none focus:ring-offset-0 focus:ring-transparent rounded-[10px]",
@@ -39,16 +57,6 @@ function FilterSearch({ filters, className }: Props) {
       </SelectContent>
     </Select>
   );
-
-  //   return (
-  //     <div className="w-full space-x-3">
-  //       {filters.map((filter) => (
-  //         <Button key={filter.value} variant={"secondary"} size={"sm"}>
-  //           {filter.name}
-  //         </Button>
-  //       ))}
-  //     </div>
-  //   );
 }
 
 export default FilterSearch;

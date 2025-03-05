@@ -9,9 +9,12 @@ import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/lib/constants";
 import { auth } from "@clerk/nextjs/server";
 
-async function HomagPage() {
+type Props = { searchParams: { [key: string]: string | undefined } };
+async function HomagPage({ searchParams }: Props) {
+  const searchQuery = searchParams.q;
+  const filter = searchParams.filter;
   const { userId: clerkId } = await auth();
-  const questions = await getQuestions({});
+  const questions = await getQuestions({ searchQuery, filter });
 
   return (
     <>
@@ -30,7 +33,7 @@ async function HomagPage() {
 
       <div className="mt-11 flex flex-col  justify-between items-center gap-5 max-md:flex-row  max-sm:flex-col">
         <LocalSearch
-          route={"/"}
+          query={"q"}
           imgSrc="/assets/icons/search.svg"
           placeholder="Search For Questions"
           className="w-full"

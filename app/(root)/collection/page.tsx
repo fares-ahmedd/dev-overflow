@@ -6,14 +6,19 @@ import LocalSearch from "@/components/search/LocalSearch";
 import { QuestionFilters } from "@/lib/constants";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+type Props = { searchParams: { [key: string]: string | undefined } };
 
-async function CollectionPage() {
+async function CollectionPage({ searchParams }: Props) {
+  const searchQuery = searchParams.q;
+  const filter = searchParams.filter;
   const { userId } = await auth();
   if (!userId) {
     redirect("/sign-in");
   }
   const questions = await getSavedQuestions({
     clerkId: userId,
+    searchQuery,
+    filter,
   });
 
   return (
@@ -22,7 +27,7 @@ async function CollectionPage() {
 
       <div className="mt-11 flex flex-col md:flex-row gap-2 justify-between items-center">
         <LocalSearch
-          route={"/"}
+          query="q"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search For Questions"
           className="w-full"

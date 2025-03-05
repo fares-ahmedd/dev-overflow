@@ -16,12 +16,44 @@ import {
 } from "./shared.types";
 import Answer from "@/db/answer.model";
 import Interaction from "@/db/interaction.model";
+import { FilterQuery } from "mongoose";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
 
-    const questions: QuestionWithAnswersAndTags[] = await Question.find({})
+    const { searchQuery, filter } = params;
+
+    const query: FilterQuery<typeof Question> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { content: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    let sortOptions = {};
+
+    switch (filter) {
+      case "newest":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "frequent":
+        sortOptions = { views: -1 };
+        break;
+      case "unanswered":
+        query.answers = { $size: 0 };
+        break;
+
+      case "recommended":
+        sortOptions = { upvotes: -1 };
+        break;
+
+      default:
+        sortOptions = {};
+    }
+    const questions: QuestionWithAnswersAndTags[] = await Question.find(query)
       .populate({
         path: "tags",
         model: Tag,
@@ -30,7 +62,7 @@ export async function getQuestions(params: GetQuestionsParams) {
         path: "author",
         model: User,
       })
-      .sort({ createdAt: -1 });
+      .sort(sortOptions);
     return questions;
   } catch (error) {
     console.error(error);

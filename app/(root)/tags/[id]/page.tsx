@@ -8,14 +8,16 @@ export type Props = {
   params: {
     id: string;
   };
-  searchParams: null;
+  searchParams: { [key: string]: string | undefined };
 };
 
 async function page({ params, searchParams }: Props) {
-  const { userId: clerkId } = await auth();
+  const searchQuery = searchParams.q;
   const { name, questions } = await getQuestionsByTagId({
     tagId: params.id,
+    searchQuery,
   });
+  const { userId: clerkId } = await auth();
 
   return (
     <>
@@ -23,7 +25,7 @@ async function page({ params, searchParams }: Props) {
 
       <div className="mt-11 ">
         <LocalSearch
-          route={"/"}
+          query={"q"}
           imgSrc="/assets/icons/search.svg"
           placeholder="Search Tag Questions"
           className="w-full"

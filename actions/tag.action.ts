@@ -40,8 +40,39 @@ export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
 
-    const tags: TagType[] = await Tag.find({});
+    const { page = 1, pageSize = 10, searchQuery, filter } = params;
 
+    const query: FilterQuery<ITag> = {};
+
+    if (searchQuery) {
+      query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }];
+    }
+
+    let sortOptions = {};
+
+    switch (filter) {
+      case "popular":
+        // Use aggregation to sort by the length of the `questions` array
+        const tags: TagType[] = await Tag.aggregate([
+          { $match: query }, // Apply the search query
+          { $addFields: { questionsCount: { $size: "$questions" } } }, // Add a field for the length of the `questions` array
+          { $sort: { questionsCount: -1 } }, // Sort by the new `questionsCount` field
+        ]);
+        return tags;
+      case "recent":
+        sortOptions = { createdOn: -1 };
+        break;
+      case "old":
+        sortOptions = { createdOn: 1 };
+        break;
+      case "name":
+        sortOptions = { name: 1 };
+        break;
+      default:
+        sortOptions = {};
+    }
+
+    const tags: TagType[] = await Tag.find(query).sort(sortOptions);
     return tags;
   } catch (error) {
     console.error(error);
