@@ -62,10 +62,9 @@ export const QuestionFilters = [
 
 export const TagFilters = [
   { name: "All Tags", value: "all" },
-  { name: "Popular", value: "popular" },
   { name: "Recent", value: "recent" },
-  { name: "Name", value: "name" },
   { name: "Old", value: "old" },
+  { name: "Name", value: "name" },
 ];
 
 export const HomePageFilters = [
@@ -82,3 +81,5 @@ export const GlobalSearchFilters = [
   { name: "User", value: "user" },
   { name: "Tag", value: "tag" },
 ];
+
+export const MAX_BUTTONS = 5;

@@ -1,6 +1,7 @@
 import { getSavedQuestions } from "@/actions/user.action";
 import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/NoResult";
+import Pagination from "@/components/Pagination";
 import FilterSearch from "@/components/search/FilterSearch";
 import LocalSearch from "@/components/search/LocalSearch";
 import { QuestionFilters } from "@/lib/constants";
@@ -11,14 +12,17 @@ type Props = { searchParams: { [key: string]: string | undefined } };
 async function CollectionPage({ searchParams }: Props) {
   const searchQuery = searchParams.q;
   const filter = searchParams.filter;
+  const page = searchParams.page ? Number(searchParams.page) : 1;
+
   const { userId } = await auth();
   if (!userId) {
     redirect("/sign-in");
   }
-  const questions = await getSavedQuestions({
+  const { questions, meta } = await getSavedQuestions({
     clerkId: userId,
     searchQuery,
     filter,
+    page,
   });
 
   return (
@@ -55,6 +59,8 @@ async function CollectionPage({ searchParams }: Props) {
           />
         )}
       </div>
+
+      <Pagination isNext={meta.isNext} totalPages={meta.totalPages} />
     </>
   );
 }

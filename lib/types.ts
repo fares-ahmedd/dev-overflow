@@ -81,3 +81,17 @@ export type PopularTagType = {
   name: string;
   numberOfQuestions: number;
 };
+
+export interface GetAllTagsReturnType {
+  tags: TagType[];
+  meta: {
+    totalPages: number;
+    isNext: boolean;
+  };
+}
+
+export type GetQuestionsByTagIdType = {
+  questions: QuestionWithAnswersAndTags[];
+  name: string;
+  meta: { totalPages: number; isNext: boolean };
+};

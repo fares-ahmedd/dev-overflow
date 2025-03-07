@@ -7,7 +7,7 @@ import ParseHTML from "@/components/ParseHTML";
 import RenderTag from "@/components/RenderTag";
 import AnswerForm from "@/components/forms/AnswerForm";
 import { auth } from "@clerk/nextjs/server";
-import { UserType } from "@/lib/types";
+import { TagType, UserType } from "@/lib/types";
 import { getUserById } from "@/actions/user.action";
 import AllAnswers from "@/components/AllAnswers";
 import Votes from "@/components/Votes";
@@ -19,7 +19,9 @@ async function QuestionDetailsPage({ params, searchParams }: Props) {
   const { userId: clerkId } = await auth();
   const { id } = params;
   const filter = searchParams.filter;
+
   const question = await getQuestionById({ questionId: id });
+  const page = searchParams.page ? Number(searchParams.page) : 1;
 
   let mongoUser: UserType | null = null;
 
@@ -91,7 +93,7 @@ async function QuestionDetailsPage({ params, searchParams }: Props) {
       <ParseHTML data={question.content} />
 
       <div className="my-6 flex flex-wrap gap-2">
-        {question.tags.map((tag: any) => (
+        {question.tags.map((tag: TagType) => (
           <RenderTag
             key={tag._id}
             _id={tag._id}
@@ -106,6 +108,7 @@ async function QuestionDetailsPage({ params, searchParams }: Props) {
         userId={mongoUser?._id ?? ""}
         filter={filter}
         totalAnswers={question.answers.length}
+        page={page}
       />
 
       <AnswerForm

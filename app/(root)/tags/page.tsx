@@ -1,6 +1,7 @@
 import { getAllTags } from "@/actions/tag.action";
 import MyLink from "@/components/MyLink";
 import NoResult from "@/components/NoResult";
+import Pagination from "@/components/Pagination";
 import FilterSearch from "@/components/search/FilterSearch";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
@@ -10,15 +11,17 @@ type Props = { searchParams: { [key: string]: string | undefined } };
 async function TagsPage({ searchParams }: Props) {
   const searchQuery = searchParams.q;
   const filter = searchParams.filter;
-  const tags = await getAllTags({
+  const page = searchParams.page ? Number(searchParams.page) : 1;
+
+  const { tags, meta } = await getAllTags({
     searchQuery,
     filter,
+    page,
   });
 
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Tags</h1>
-
       <div className="mt-11 flex   justify-between items-center gap-5 max-md:flex-col">
         <LocalSearch
           query={"q"}
@@ -28,7 +31,6 @@ async function TagsPage({ searchParams }: Props) {
         />
         <FilterSearch filters={TagFilters} />
       </div>
-
       {tags.length > 0 ? (
         <section className="mt-12 grid gap-3 grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
           {tags.map((tag) => (
@@ -56,7 +58,8 @@ async function TagsPage({ searchParams }: Props) {
           link="/ask-question"
           linkTitle="Ask a question"
         />
-      )}
+      )}{" "}
+      <Pagination isNext={meta.isNext} totalPages={meta.totalPages} />
     </>
   );
 }

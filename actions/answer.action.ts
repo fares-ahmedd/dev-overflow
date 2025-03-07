@@ -42,7 +42,8 @@ export async function getAnswers(params: GetAnswersParams) {
   try {
     connectToDatabase();
 
-    const { questionId, filter, page = 1, pageSize = 20 } = params;
+    const { questionId, filter, page = 1, pageSize = 10 } = params;
+    const skipAmount = (page - 1) * pageSize;
 
     let sortOptions = {};
 
@@ -65,9 +66,20 @@ export async function getAnswers(params: GetAnswersParams) {
     }
     const answers: AnswerType[] = await Answer.find({ question: questionId })
       .populate("author", "_id clerkId name picture")
+      .skip(skipAmount)
+      .limit(pageSize + 1)
+
       .sort(sortOptions);
 
-    return answers;
+    const totalAnswers = await Answer.countDocuments({ question: questionId });
+    const isNext = totalAnswers > answers.length;
+    return {
+      answers,
+      meta: { totalPages: totalAnswers, isNext },
+    } as {
+      answers: AnswerType[];
+      meta: { totalPages: number; isNext: boolean };
+    };
   } catch (error) {
     console.error(error);
     throw error;

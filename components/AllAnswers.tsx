@@ -6,12 +6,13 @@ import Image from "next/image";
 import { getTimestamp } from "@/lib/utils";
 import ParseHTML from "./ParseHTML";
 import Votes from "./Votes";
+import Pagination from "./Pagination";
 
 type Props = {
   questionId: string;
   userId: string;
   totalAnswers: number;
-  page?: number;
+  page: number;
   filter: string | undefined;
 };
 
@@ -19,10 +20,10 @@ async function AllAnswers({
   questionId,
   totalAnswers,
   userId,
-  page,
+  page = 1,
   filter,
 }: Props) {
-  const answers = await getAnswers({ questionId, filter });
+  const { answers, meta } = await getAnswers({ questionId, filter, page });
   return (
     <div className="mt-11 mb-2 p-2 rounded-lg background-light900_dark200">
       <div className="flex-between">
@@ -70,22 +71,13 @@ async function AllAnswers({
                   hasUpVoted={answer.upvotes.includes(userId)}
                   hasDownVoted={answer.downvotes.includes(userId)}
                 />
-                {/* <Votes
-                  type="Answer"
-                  itemId={JSON.stringify(answer._id)}
-                  userId={JSON.stringify(userId)}
-                  disableVoting={answer.author.clerkId === clerkId}
-                  upvotes={answer.upvotes.length}
-                  hasAlreadyUpvoted={answer.upvotes.includes(userId)}
-                  downvotes={answer.downvotes.length}
-                  hasAlreadyDownvoted={answer.downvotes.includes(userId)}
-                /> */}
               </div>
             </div>
             <ParseHTML data={answer.content} />
           </article>
         ))}
       </div>
+      <Pagination isNext={meta.isNext} totalPages={meta.totalPages} />
     </div>
   );
 }

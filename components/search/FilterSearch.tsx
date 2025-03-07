@@ -36,7 +36,7 @@ function FilterSearch({ filters, className }: Props) {
     <Select defaultValue={initialFilter} onValueChange={handleFilter}>
       <SelectTrigger
         className={cn(
-          "w-full background-light800_darkgradient  min-h-[56px] border-none focus:ring-offset-0 focus:ring-transparent rounded-[10px]",
+          "w-full background-light800_darkgradient   min-h-[56px] border-none focus:ring-offset-0 focus:ring-transparent rounded-[10px]",
           className
         )}
       >

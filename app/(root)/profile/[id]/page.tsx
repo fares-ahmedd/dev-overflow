@@ -6,7 +6,7 @@ import QuestionTab from "@/components/QuestionTab";
 import Stats from "@/components/Stats";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getJoinedDate, getTimestamp } from "@/lib/utils";
+import { getJoinedDate } from "@/lib/utils";
 import { SignedIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
@@ -15,7 +15,7 @@ type Props = {
   params: {
     id: string;
   };
-  searchParams: any;
+  searchParams: { [key: string]: string | undefined };
 };
 async function ProfilePage({ params, searchParams }: Props) {
   const { userId: clerkId } = await auth();
@@ -29,7 +29,7 @@ async function ProfilePage({ params, searchParams }: Props) {
             alt="profile picture"
             width={140}
             height={140}
-            className="rounded-full object-cover"
+            className="rounded-full object-cover  aspect-square"
           />
 
           <div className="mt-3 space-y-2">

@@ -2,6 +2,7 @@ import { getQuestions } from "@/actions/question.action";
 import QuestionCard from "@/components/cards/QuestionCard";
 import MyLink from "@/components/MyLink";
 import NoResult from "@/components/NoResult";
+import Pagination from "@/components/Pagination";
 import FilterSearch from "@/components/search/FilterSearch";
 import HomeFilterButtons from "@/components/search/HomeFilterButtons";
 import LocalSearch from "@/components/search/LocalSearch";
@@ -13,8 +14,9 @@ type Props = { searchParams: { [key: string]: string | undefined } };
 async function HomagPage({ searchParams }: Props) {
   const searchQuery = searchParams.q;
   const filter = searchParams.filter;
+  const page = searchParams.page ? Number(searchParams.page) : 1;
   const { userId: clerkId } = await auth();
-  const questions = await getQuestions({ searchQuery, filter });
+  const { questions, meta } = await getQuestions({ searchQuery, filter, page });
 
   return (
     <>
@@ -62,6 +64,8 @@ async function HomagPage({ searchParams }: Props) {
           />
         )}
       </div>
+
+      <Pagination isNext={meta.isNext} totalPages={meta.totalPages} />
     </>
   );
 }

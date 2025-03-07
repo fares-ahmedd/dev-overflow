@@ -9,8 +9,9 @@ import {
 import User from "@/db/user.model";
 import Tag, { ITag } from "@/db/tag.model";
 import {
+  GetAllTagsReturnType,
+  GetQuestionsByTagIdType,
   PopularTagType,
-  QuestionWithAnswersAndTags,
   TagType,
   UserType,
 } from "@/lib/types";
@@ -36,13 +37,16 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   }
 }
 
-export async function getAllTags(params: GetAllTagsParams) {
+export async function getAllTags(
+  params: GetAllTagsParams
+): Promise<GetAllTagsReturnType> {
   try {
     connectToDatabase();
 
     const { page = 1, pageSize = 10, searchQuery, filter } = params;
 
     const query: FilterQuery<ITag> = {};
+    const skipAmount = (page - 1) * pageSize;
 
     if (searchQuery) {
       query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }];
@@ -51,14 +55,6 @@ export async function getAllTags(params: GetAllTagsParams) {
     let sortOptions = {};
 
     switch (filter) {
-      case "popular":
-        // Use aggregation to sort by the length of the `questions` array
-        const tags: TagType[] = await Tag.aggregate([
-          { $match: query }, // Apply the search query
-          { $addFields: { questionsCount: { $size: "$questions" } } }, // Add a field for the length of the `questions` array
-          { $sort: { questionsCount: -1 } }, // Sort by the new `questionsCount` field
-        ]);
-        return tags;
       case "recent":
         sortOptions = { createdOn: -1 };
         break;
@@ -72,20 +68,31 @@ export async function getAllTags(params: GetAllTagsParams) {
         sortOptions = {};
     }
 
-    const tags: TagType[] = await Tag.find(query).sort(sortOptions);
-    return tags;
+    const tags: TagType[] = await Tag.find(query)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .sort(sortOptions);
+
+    const totalTags = await Tag.countDocuments(query);
+    const totalPages = Math.ceil(totalTags / pageSize);
+    const isNext = totalTags > skipAmount + tags.length;
+
+    return { tags, meta: { totalPages, isNext } };
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
 
-export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
+export async function getQuestionsByTagId(
+  params: GetQuestionsByTagIdParams
+): Promise<GetQuestionsByTagIdType> {
   try {
     connectToDatabase();
 
     const { tagId, page = 1, pageSize = 10, searchQuery } = params;
 
+    const skipAmount = (page - 1) * pageSize;
     const tagFilter: FilterQuery<ITag> = { _id: tagId };
     const tag = await Tag.findOne(tagFilter).populate({
       path: "questions",
@@ -97,6 +104,8 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
         : {},
       options: {
         sort: { createdAt: -1 },
+        skip: skipAmount,
+        limit: pageSize + 1,
       },
       populate: [
         { path: "tags", model: Tag, select: "_id name" },
@@ -108,10 +117,19 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
       throw new Error("Tag not found");
     }
 
+    const tagWithAllQuestions = await Tag.findOne(tagFilter);
+    const totalPages = tagWithAllQuestions.questions.length;
+
+    const isNext = tag.questions.length > pageSize;
+
     return {
       questions: tag.questions,
       name: tag.name,
-    } as { questions: QuestionWithAnswersAndTags[]; name: string };
+      meta: {
+        totalPages,
+        isNext,
+      },
+    };
   } catch (error) {
     console.error(error);
     throw error;

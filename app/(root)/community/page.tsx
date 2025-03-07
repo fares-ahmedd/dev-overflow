@@ -1,6 +1,7 @@
 import { getAllUsers } from "@/actions/user.action";
 import UserCard from "@/components/cards/UserCard";
 import MyLink from "@/components/MyLink";
+import Pagination from "@/components/Pagination";
 import FilterSearch from "@/components/search/FilterSearch";
 import LocalSearch from "@/components/search/LocalSearch";
 import { UserFilters } from "@/lib/constants";
@@ -9,7 +10,9 @@ type Props = { searchParams: { [key: string]: string | undefined } };
 async function CommunityPage({ searchParams }: Props) {
   const searchQuery = searchParams.q;
   const filter = searchParams.filter;
-  const users = await getAllUsers({ searchQuery, filter });
+  const page = searchParams.page ? Number(searchParams.page) : 1;
+
+  const { users, meta } = await getAllUsers({ searchQuery, filter, page });
 
   return (
     <>
@@ -42,6 +45,8 @@ async function CommunityPage({ searchParams }: Props) {
           </MyLink>
         </div>
       )}
+
+      <Pagination isNext={meta.isNext} totalPages={meta.totalPages} />
     </>
   );
 }

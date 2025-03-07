@@ -1,6 +1,7 @@
 import { getQuestionsByTagId } from "@/actions/tag.action";
 import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/NoResult";
+import Pagination from "@/components/Pagination";
 import LocalSearch from "@/components/search/LocalSearch";
 import { auth } from "@clerk/nextjs/server";
 
@@ -13,9 +14,12 @@ export type Props = {
 
 async function page({ params, searchParams }: Props) {
   const searchQuery = searchParams.q;
-  const { name, questions } = await getQuestionsByTagId({
+  const page = searchParams.page ? Number(searchParams.page) : 1;
+
+  const { meta, questions, name } = await getQuestionsByTagId({
     tagId: params.id,
     searchQuery,
+    page,
   });
   const { userId: clerkId } = await auth();
 
@@ -52,6 +56,8 @@ async function page({ params, searchParams }: Props) {
           />
         )}
       </div>
+
+      <Pagination isNext={meta.isNext} totalPages={meta.totalPages} />
     </>
   );
 }
