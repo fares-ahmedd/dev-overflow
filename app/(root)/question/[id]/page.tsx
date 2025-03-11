@@ -29,6 +29,8 @@ async function QuestionDetailsPage({ params, searchParams }: Props) {
     mongoUser = await getUserById({ userId: clerkId });
   }
 
+  console.log("test");
+
   return (
     <>
       <div className="flex-start w-full flex-col">
