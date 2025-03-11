@@ -17,7 +17,7 @@ async function UserCard({ user }: Props) {
   return (
     <div className="shadow-light100_darknone">
       <article className="background-light900_dark200 light-border flex w-full flex-col items-center justify-center rounded-2xl border p-8 h-full">
-        <MyLink href={`/profile/${user.username}`}>
+        <MyLink href={`/profile/${user.clerkId}`}>
           <Image
             src={user.picture}
             alt={user.name}

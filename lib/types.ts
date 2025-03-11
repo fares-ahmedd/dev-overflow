@@ -95,3 +95,9 @@ export type GetQuestionsByTagIdType = {
   name: string;
   meta: { totalPages: number; isNext: boolean };
 };
+
+export interface BadgeCounts {
+  GOLD: number;
+  SILVER: number;
+  BRONZE: number;
+}

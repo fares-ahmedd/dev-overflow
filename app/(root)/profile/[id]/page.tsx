@@ -85,6 +85,8 @@ async function ProfilePage({ params, searchParams }: Props) {
       <Stats
         totalQuestions={userInfo?.totalQuestions}
         totalAnswers={userInfo?.totalAnswers}
+        badgeCounts={userInfo?.badgeCounts}
+        reputation={userInfo?.reputation}
       />
 
       <div className="my-5 ">

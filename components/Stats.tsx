@@ -1,16 +1,27 @@
+import { BadgeCounts } from "@/lib/types";
 import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
 
 type Props = {
   totalQuestions: number | undefined;
   totalAnswers: number | undefined;
+  badgeCounts: BadgeCounts | undefined;
+  reputation: number | undefined;
 };
 
-function Stats({ totalAnswers = 0, totalQuestions = 0 }: Props) {
+function Stats({
+  totalAnswers = 0,
+  totalQuestions = 0,
+  badgeCounts,
+  reputation = 0,
+}: Props) {
   return (
     <div className="mt-10">
       <h4 className="h3-semibold text-dark200_light900">Stats</h4>
 
+      <h5 className="body-regular text-light-400 dark:text-light-500 ">
+        reputation : {reputation}
+      </h5>
       <div className="mt-5 grid grid-cols-1 gap-5 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <div className="light-border background-light900_dark200 flex flex-wrap items-center justify-evenly gap-4 rounded-md border p-6 shadow-light-300 dark:shadow-dark-200">
           <div>
@@ -30,17 +41,17 @@ function Stats({ totalAnswers = 0, totalQuestions = 0 }: Props) {
         </div>
         <StatsCard
           imgUrl="/assets/icons/gold-medal.svg"
-          value={0}
+          value={badgeCounts?.GOLD ?? 0}
           title="Gold Badges"
         />{" "}
         <StatsCard
           imgUrl="/assets/icons/silver-medal.svg"
-          value={0}
+          value={badgeCounts?.SILVER ?? 0}
           title="Silver Badges"
         />{" "}
         <StatsCard
           imgUrl="/assets/icons/bronze-medal.svg"
-          value={0}
+          value={badgeCounts?.BRONZE ?? 0}
           title="Bronze Badges"
         />
       </div>

@@ -4,7 +4,7 @@
 import { AnswerSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
-import { useEffect, useRef } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -19,6 +19,7 @@ import Image from "next/image";
 import { createAnswer } from "@/actions/answer.action";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 type Props = {
   question?: string;
@@ -26,7 +27,8 @@ type Props = {
   authorId: string;
 };
 
-function AnswerForm({ authorId, questionId }: Props) {
+function AnswerForm({ authorId, questionId, question }: Props) {
+  const [isGenerating, setIsGenerating] = useState(false);
   const pathname = usePathname();
   const editorRef = useRef<any>(null);
 
@@ -60,27 +62,66 @@ function AnswerForm({ authorId, questionId }: Props) {
     }
   };
 
-  const isSubmitting = form.formState.isSubmitting;
+  const isSubmitting = form.formState.isSubmitting || isGenerating;
 
-  useEffect(function changeUserName() {}, []);
+  const generateAiAnswer = async () => {
+    if (!authorId) return;
+
+    setIsGenerating(true);
+
+    try {
+      const res = await fetch(`/api/chatgpt`, {
+        method: "POST",
+        body: JSON.stringify({
+          question,
+        }),
+      });
+
+      const aiAnswer = await res.json();
+
+      const formattedAiAnswer = aiAnswer.reply.replace(/\n/g, `<br />`);
+
+      if (editorRef.current) {
+        const editor = editorRef.current;
+        editor.setContent(formattedAiAnswer);
+      }
+
+      toast.success("AI Answer generated successfully");
+    } catch (error) {
+      toast.error("Failed to generate AI answer");
+      console.error(error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
   return (
     <div>
-      <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
+      <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2 my-4">
         <h4 className="paragraph-semibold text-dark400_light800">
           Write your answer here
         </h4>
 
         <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none "
-          onClick={() => {}}
+          onClick={generateAiAnswer}
+          disabled={isSubmitting}
         >
-          <Image
-            src={"/assets/icons/stars.svg"}
-            alt="stars"
-            width={12}
-            height={12}
-          />
-          Generate an AI Answer
+          {isGenerating ? (
+            <>
+              <Loader2 className="animate-spin size-6 sm:size-10 text-[#ff7000]" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <Image
+                src={"/assets/icons/stars.svg"}
+                alt="stars"
+                width={12}
+                height={12}
+              />
+              Generate an AI Answer
+            </>
+          )}
         </Button>
       </div>
       <Form {...form}>

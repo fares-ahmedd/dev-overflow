@@ -114,6 +114,7 @@ async function QuestionDetailsPage({ params, searchParams }: Props) {
       <AnswerForm
         questionId={JSON.stringify(question._id)}
         authorId={JSON.stringify(mongoUser?._id)}
+        question={question.content}
       />
     </>
   );

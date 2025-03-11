@@ -1,6 +1,7 @@
 import { Schema } from "mongoose";
 
 import { IUser } from "@/database/user.model";
+import { BADGE_CRITERIA } from "@/lib/constants";
 
 export interface CreateAnswerParams {
   content: string;
@@ -157,3 +158,5 @@ export interface GetUserStatsParams {
 export interface DeleteUserParams {
   clerkId: string;
 }
+
+export type BadgeCriteriaType = keyof typeof BADGE_CRITERIA;
