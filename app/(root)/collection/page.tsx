@@ -7,6 +7,11 @@ import LocalSearch from "@/components/search/LocalSearch";
 import { QuestionFilters } from "@/lib/constants";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+
+export const metadata = {
+  title: "Saved Questions",
+};
+
 type Props = { searchParams: { [key: string]: string | undefined } };
 
 async function CollectionPage({ searchParams }: Props) {
@@ -59,7 +64,6 @@ async function CollectionPage({ searchParams }: Props) {
           />
         )}
       </div>
-
       <Pagination isNext={meta.isNext} totalPages={meta.totalPages} />
     </>
   );

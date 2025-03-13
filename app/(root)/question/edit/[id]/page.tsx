@@ -7,6 +7,11 @@ import { redirect } from "next/navigation";
 type Props = {
   params: { id: string };
 };
+
+export const metadata = {
+  title: "Edit Question",
+};
+
 async function page({ params }: Props) {
   const { userId } = await auth();
 

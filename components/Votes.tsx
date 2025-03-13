@@ -4,7 +4,7 @@ import { downvoteQuestion, upvoteQuestion } from "@/actions/question.action";
 import { toggleSaveQuestion } from "@/actions/user.action";
 import { formatAndDivideNumber } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import SaveButton from "./SaveButton";
 import VoteButton from "./VoteButton";
@@ -33,9 +33,13 @@ function Votes({
   userId,
 }: Props) {
   const pathname = usePathname();
-
+  const router = useRouter();
   const handleVote = async (action: string) => {
-    if (!userId) return;
+    if (!userId) {
+      toast.info("Please login to vote");
+      router.push("/sign-in");
+      return;
+    }
 
     if (action === "upvote") {
       if (type === "Question") {

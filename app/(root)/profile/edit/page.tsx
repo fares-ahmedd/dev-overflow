@@ -2,6 +2,9 @@ import { getUserById } from "@/actions/user.action";
 import ProfileForm from "@/components/forms/ProfileForm";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+export const metadata = {
+  title: "Edit Profile",
+};
 
 async function page() {
   const { userId } = await auth();

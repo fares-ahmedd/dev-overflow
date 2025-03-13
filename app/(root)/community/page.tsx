@@ -7,6 +7,10 @@ import LocalSearch from "@/components/search/LocalSearch";
 import { UserFilters } from "@/lib/constants";
 type Props = { searchParams: { [key: string]: string | undefined } };
 
+export const metadata = {
+  title: "Community",
+};
+
 async function CommunityPage({ searchParams }: Props) {
   const searchQuery = searchParams.q;
   const filter = searchParams.filter;
@@ -45,7 +49,6 @@ async function CommunityPage({ searchParams }: Props) {
           </MyLink>
         </div>
       )}
-
       <Pagination isNext={meta.isNext} totalPages={meta.totalPages} />
     </>
   );

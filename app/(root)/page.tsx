@@ -9,6 +9,8 @@ import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/lib/constants";
 import { auth } from "@clerk/nextjs/server";
+import { Loader2 } from "lucide-react";
+import { Suspense } from "react";
 
 type Props = { searchParams: { [key: string]: string | undefined } };
 async function HomagPage({ searchParams }: Props) {
@@ -41,7 +43,16 @@ async function HomagPage({ searchParams }: Props) {
           className="w-full"
         />
         <FilterSearch filters={HomePageFilters} className="md:hidden" />
-        <HomeFilterButtons />
+
+        <Suspense
+          fallback={
+            <div className="max-md:hidden">
+              <Loader2 className="size-6 animate-spin" />
+            </div>
+          }
+        >
+          <HomeFilterButtons />
+        </Suspense>
       </div>
 
       <div className="mt-10 flex w-full flex-col gap-6">

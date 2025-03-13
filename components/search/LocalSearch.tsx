@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Input } from "../ui/input";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebounce } from "@/hooks/useDebounce";
+import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
 
 type Props = {
   query: string;
@@ -11,7 +13,12 @@ type Props = {
   className?: string;
 };
 
-function LocalSearch({ imgSrc, placeholder, query, className = "" }: Props) {
+function LocalSearchContent({
+  imgSrc,
+  placeholder,
+  query,
+  className = "",
+}: Props) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -43,6 +50,20 @@ function LocalSearch({ imgSrc, placeholder, query, className = "" }: Props) {
         className="paragraph-regular no-focus placeholder text-dark400_light700 border-none bg-transparent shadow-none outline-none"
       />
     </div>
+  );
+}
+
+function LocalSearch(props: any) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center">
+          <Loader2 className="animate-spin size-6" />
+        </div>
+      }
+    >
+      <LocalSearchContent {...props} />
+    </Suspense>
   );
 }
 

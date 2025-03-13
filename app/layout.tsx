@@ -17,12 +17,25 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Dev Overflow",
+  title: {
+    template: `%s | dev overflow`,
+    default: `Home | dev overflow`,
+  },
   description:
     "A developer community platform that enables collaboration, knowledge sharing, and an engaging user experience",
+  metadataBase: new URL("https://developers-platform.vercel.app/"),
 
   icons: {
     icon: "/assets/images/site-logo.svg",
+  },
+
+  openGraph: {
+    title: "Dev Overflow",
+    description:
+      "A developer community platform that enables collaboration, knowledge sharing, and an engaging user experience",
+    images: ["/assets/images/preview.png"],
+    url: "https://developers-platform.vercel.app/",
+    type: "website",
   },
 };
 
