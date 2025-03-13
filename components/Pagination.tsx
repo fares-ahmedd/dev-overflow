@@ -1,15 +1,16 @@
 "use client";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { MAX_BUTTONS } from "@/lib/constants";
+import { Suspense } from "react";
 
 type Props = {
   isNext: boolean;
   totalPages: number;
 };
 
-function Pagination({ isNext, totalPages }: Props) {
+function PaginationContent({ isNext, totalPages }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -93,6 +94,20 @@ function Pagination({ isNext, totalPages }: Props) {
         Next <ArrowRight />
       </Button>
     </div>
+  );
+}
+
+function Pagination(props: Props) {
+  return (
+    <Suspense
+      fallback={
+        <div className="my-4 flex items-center justify-center">
+          <Loader2 className="animate-spin size-6 " />
+        </div>
+      }
+    >
+      <PaginationContent {...props} />
+    </Suspense>
   );
 }
 

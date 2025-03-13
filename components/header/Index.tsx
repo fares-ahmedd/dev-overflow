@@ -4,6 +4,8 @@ import User from "./User";
 import Theme from "./Theme";
 import MobileNav from "./MobileNav";
 import GlobalSearch from "../search/GlobalSearch";
+import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
 
 function Header() {
   return (
@@ -21,7 +23,15 @@ function Header() {
           </p>
         </Link>
 
-        <GlobalSearch />
+        <Suspense
+          fallback={
+            <div className="my-4 flex items-center justify-center max-lg:hidden">
+              <Loader2 className="animate-spin size-6 " />
+            </div>
+          }
+        >
+          <GlobalSearch />
+        </Suspense>
 
         <div className="flex-between gap-5">
           <Theme />

@@ -2,6 +2,9 @@ import { getUserById } from "@/actions/user.action";
 import QuestionForm from "@/components/forms/QuestionForm";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+export const metadata = {
+  title: "Ask Question",
+};
 
 async function AskQuestionPage() {
   const { userId } = await auth();

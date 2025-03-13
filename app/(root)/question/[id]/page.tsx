@@ -15,6 +15,14 @@ type Props = {
   params: { id: string };
   searchParams: { [key: string]: string | undefined };
 };
+
+export async function generateMetadata({ params }: Props) {
+  const question = await getQuestionById({ questionId: params.id });
+
+  return {
+    title: `${question.title} - Ask Question`,
+  };
+}
 async function QuestionDetailsPage({ params, searchParams }: Props) {
   const { userId: clerkId } = await auth();
   const { id } = params;

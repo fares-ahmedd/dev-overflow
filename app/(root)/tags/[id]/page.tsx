@@ -56,7 +56,6 @@ async function page({ params, searchParams }: Props) {
           />
         )}
       </div>
-
       <Pagination isNext={meta.isNext} totalPages={meta.totalPages} />
     </>
   );

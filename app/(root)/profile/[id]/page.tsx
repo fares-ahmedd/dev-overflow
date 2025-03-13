@@ -17,6 +17,14 @@ type Props = {
   };
   searchParams: { [key: string]: string | undefined };
 };
+
+export async function generateMetadata({ params }: Props) {
+  const userInfo = await getUserInfo({ userId: params.id });
+
+  return {
+    title: `${userInfo?.user.name}'s Profile`,
+  };
+}
 async function ProfilePage({ params, searchParams }: Props) {
   const { userId: clerkId } = await auth();
   const userInfo = await getUserInfo({ userId: params.id });

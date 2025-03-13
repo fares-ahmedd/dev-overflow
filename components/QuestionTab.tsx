@@ -35,7 +35,6 @@ async function QuestionTab({ searchParams, userId, clerkId }: Props) {
           </p>
         )}
       </div>
-
       <Pagination
         isNext={result?.meta.isNext || false}
         totalPages={result?.meta.totalPages || 1}
