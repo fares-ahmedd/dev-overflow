@@ -63,8 +63,8 @@ export async function getQuestions(params: GetQuestionsParams) {
         path: "author",
         model: User,
       })
-      .skip(skipAmount)
-      .limit(pageSize)
+      .skip(searchQuery ? 0 : skipAmount)
+      .limit(searchQuery ? 0 : pageSize)
       .sort(sortOptions);
 
     const totalQuestions = await Question.countDocuments(query);

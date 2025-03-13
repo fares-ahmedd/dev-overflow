@@ -15,7 +15,7 @@ function PaginationContent({ isNext, totalPages }: Props) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
-
+  const searchQuery = searchParams.get("q") || "";
   const handleNavigation = (direction: "prev" | "next") => {
     const params = new URLSearchParams(searchParams.toString());
 
@@ -60,7 +60,7 @@ function PaginationContent({ isNext, totalPages }: Props) {
     pageNumbers.push(i);
   }
 
-  if (!isNext && currentPage === 1) return null;
+  if ((!isNext && currentPage === 1) || searchQuery) return null;
   return (
     <div className="my-3 flex justify-center gap-3 items-center">
       <Button

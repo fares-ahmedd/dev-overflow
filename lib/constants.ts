@@ -14,11 +14,7 @@ export const NAVBAR_LINKS = [
     route: "/collection",
     label: "Collections",
   },
-  {
-    imgURL: "/assets/icons/suitcase.svg",
-    route: "/jobs",
-    label: "Find Jobs",
-  },
+
   {
     imgURL: "/assets/icons/tag.svg",
     route: "/tags",

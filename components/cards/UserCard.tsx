@@ -47,7 +47,7 @@ async function UserCard({ user }: Props) {
               ))}
             </div>
           ) : (
-            <Badge className="small-regular background-light800_dark300 text-dark200_light900 rounded-md border-none px-4 py-2">
+            <Badge className="small-regular background-light800_dark300 text-dark200_light900 rounded-md border-none px-4 py-2 flex-center">
               No tags yet
             </Badge>
           )}

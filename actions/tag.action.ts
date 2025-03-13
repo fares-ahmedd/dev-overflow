@@ -16,21 +16,51 @@ import {
   UserType,
 } from "@/lib/types";
 import Question from "@/db/question.model";
+import Interaction from "@/db/interaction.model";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
     connectToDatabase();
-    const { userId } = params;
+    const { userId, limit = 3 } = params;
 
     const user: UserType | null = await User.findById(userId);
 
     if (!user) throw new Error("User not found");
 
-    return [
-      { name: "tag1", id: "1" },
-      { name: "tag2", id: "2" },
-      { name: "tag3", id: "3" },
-    ];
+    const userInteractions = await Interaction.find({ user: userId }).populate({
+      path: "tags",
+      model: Tag,
+      select: "_id name",
+    });
+    const tagFreqMap: { [key: string]: number } = {};
+    const tagNameToIdMap: { [key: string]: any } = {};
+    for (const interaction of userInteractions) {
+      if (interaction && interaction.tags) {
+        for (const tag of interaction.tags) {
+          if (!tagNameToIdMap[tag.name]) {
+            tagNameToIdMap[tag.name] = tag._id;
+          }
+          if (!tagFreqMap[tag.name]) {
+            tagFreqMap[tag.name] = 1;
+          } else {
+            tagFreqMap[tag.name]++;
+          }
+        }
+      }
+    }
+    const topInteractedTags = Object.keys(tagFreqMap).map((tagName) => ({
+      _id: tagNameToIdMap[tagName],
+      name: tagName,
+      count: tagFreqMap[tagName],
+    }));
+    // Sort the tags by count in descending order
+    topInteractedTags.sort((a, b) => b.count - a.count);
+    return topInteractedTags
+      .filter((tag) => ({
+        _id: tag._id,
+        name: tag.name,
+      }))
+      .slice(0, limit);
   } catch (error) {
     console.error(error);
     throw error;
