@@ -43,7 +43,7 @@ async function UserCard({ user }: Props) {
           {interactedTags.length > 0 ? (
             <div className="grid grid-cols-1 gap-2">
               {interactedTags.map((tag) => (
-                <RenderTag key={tag.id} _id={tag.id} name={tag.name} />
+                <RenderTag key={tag._id} _id={tag._id} name={tag.name} />
               ))}
             </div>
           ) : (
